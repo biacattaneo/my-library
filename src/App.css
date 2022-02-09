@@ -1,17 +1,32 @@
+*{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html{
+  min-height: 100%;
+}
+
 .App {
   text-align: center;
+  min-height: 100%;
+}
+body{
+  background-color: #e2c9ac;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+/* paleta de cor */
+/*.color1 {color: #e2a4b8;} rosinha
+.color2 {color: #e2c9ac;} amarelado
+.color3 {color: #2d1818;} marrom
+.color4 {color: #7f7777;} cinza marrom
+.color5 {color: #e5e5e5;} branco*/
 
 .App-header {
   background-color: #282c34;
@@ -28,11 +43,3 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

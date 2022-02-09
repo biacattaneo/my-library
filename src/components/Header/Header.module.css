@@ -1,0 +1,38 @@
+.header{
+    background-color: #2d1818;
+}
+
+.list {
+    display: flex;
+    list-style: none;
+    background-color: #2d1818;
+    margin-top: auto;
+    padding-bottom: 18px;
+    color: #e5e5e5;
+    font-size: 1.25rem;
+    flex-direction: row;
+    justify-content:space-around;
+}
+
+.item {
+    margin-top: 13px;
+    margin-right: 1em;
+    text-decoration: none;
+    color: #e5e5e5;
+    background-color: #2d1818;
+}
+
+.item:hover:active{
+    color: #e5e5e5 bold;
+}
+
+.loginIcon{
+    display: flex;
+    background-color: #2d1818;
+    color: #e5e5e5;
+    margin-top: 16px;
+    /* padding-left: 960px; */
+    /* align-items: flex-end; */
+    /* justify-content:space-between; */
+    /* flex-direction: row-reverse; */
+}

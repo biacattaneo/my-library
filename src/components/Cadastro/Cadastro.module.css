@@ -1,0 +1,32 @@
+h2{
+    color: #2d1818;
+}
+
+.formCadastro{
+    flex-direction: column;
+}
+
+.campo{
+    background-color: #e5e5e5;
+    height: 25px;
+    width: 300px;
+}
+
+.labelCadastro{
+    color: #2d1818 ;
+    font-size:large;
+}
+
+.buttonCadastro{
+    background-color: #e5e5e5;
+    height: 25px;
+    width: 200px;
+    margin-top: 7px;
+    color: #2d1818;
+    font-size: medium;
+}
+
+.labelNaoTem{
+    color: #2d1818;
+    font-size: smaller;
+}
