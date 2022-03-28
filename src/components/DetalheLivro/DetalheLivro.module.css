@@ -1,0 +1,29 @@
+.divMain{
+    display: flex;
+    justify-content:center;
+    font-size: large;
+    
+}
+.divMain > .divImg > img {
+    padding-left: 10px;
+    padding-right: 100px;
+    width: 130px;
+    height: 170px;
+}
+.divMain > .divImg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.divBtnCheck{
+    margin: 80px;
+    background-color: red;
+    
+}
+
+.divDescricao{
+    text-align: justify;
+    margin-left: 80px;
+    margin-right: 80px;
+}

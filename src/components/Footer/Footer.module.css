@@ -1,12 +1,8 @@
 .list{
     display: flex;
-    /* position: absolute; */
     list-style: none;
     background-color: #2d1818;
-    /* bottom:0; */
     margin-bottom: 1px;
-    /* padding-bottom: 70px;
-    margin-top: 370px; */
 }
 
 .item{
@@ -19,4 +15,8 @@
 .emailIcon{
     background-color: #2d1818;
     color: #7f7777;
+}
+
+.footer{
+
 }

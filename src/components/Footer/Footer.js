@@ -4,7 +4,7 @@ import { AiOutlineMail } from "react-icons/ai";
 
 function Footer() {
     return (
-        <div className={styles.teste} >
+        <div className={styles.footer} >
             <ul className={styles.list}>
                 <li className={styles.item}>Desenvolvido por Beatriz Cattaneo <br/>Criado em 2022</li>
                 <li className={styles.item}>Contato: <AiOutlineMail className={styles.emailIcon}/> biacattaneo2013@gmail.com</li>

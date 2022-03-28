@@ -6,6 +6,8 @@ import Login from './components/Login/Login';
 import DetalhePerfilFinancas from './components/DetalhePerfilFinancas/DetalhePerfilFinancas';
 import { AiOutlineHistory } from "react-icons/ai";
 import Cadastro from './components/Cadastro/Cadastro';
+import Grupos from './components/Grupos/Grupos';
+import DetalheLivro from './components/DetalheLivro/DetalheLivro';
 
 function Rotas() {
     return (
@@ -20,8 +22,8 @@ function Rotas() {
                         <Route path='/detalhePerfilFinancas' element={<DetalhePerfilFinancas />} />
                         <Route path='/emprestedoe' element={<></>} />
                         {/* <Route path='/perfilusuario'element={} /> */}
-                        {/* <Route path='/detalhelivro' element={<Book/>} /> */}
-                        {/* <Route path='/grupos'element={<Home/>} /> */}
+                        <Route path='/detalhelivro/:id' element={<DetalheLivro/>} />
+                        <Route path='/grupos'element={<Grupos/>} />
                         <Route path='*' element={<h1>Página não encontrada</h1>} />
                     </Routes>
                 </Suspense>
