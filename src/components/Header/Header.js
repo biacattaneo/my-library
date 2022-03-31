@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { BrowserRouter, Link } from "react-router-dom";
 import styles from './Header.module.css'
-import { AiOutlineUser } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
+import { TextField } from '@mui/material';
+import { Glob } from "../../App";
+import Home from '../Home/Home';
+import MyContext from '../GlobalVariables';
 
-function Header() {
+function Header(props) {
+
+    const [_searchBookParam, _setSearchBookParam] = useState('Harry%20Potter');
+    useEffect(() => {
+        setparametroDeBusca(_searchBookParam)
+    }, [_searchBookParam])
+
+    const [parametroDeBusca, setparametroDeBusca] = useContext(MyContext);
+
     return (
         <div className={styles.header}>
+            {/* <Home searchQuery={'batata frita'}></Home> */}
             <BrowserRouter>
                 <ul className={styles.list}>
                     <li className={styles.item}>
@@ -23,6 +36,10 @@ function Header() {
                     <li className={styles.item}>
                         <a href="/comunidade">Comunidade</a>
                         {/* <Link to='/emprestedoe'>Empreste/Doe</Link> */}
+                    </li>
+                    <li className={styles.textBusca}>
+                        <TextField id="outlined-basic" onChange={e => { _setSearchBookParam(e.target.value) }} className={styles.busca} label="Pesquisa.." variant="outlined" size="small" sx={{ marginTop: '5px', input: { color: 'rgb(45,24,24)' } }} />
+                        <AiOutlineSearch className={styles.buscabtn} />
                     </li>
                     <li>
                         <a href="/login"><AiOutlineUser className={styles.loginIcon} /></a>

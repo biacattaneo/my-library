@@ -14,6 +14,17 @@
     justify-content:space-around;
 }
 
+.header > .list > .item > a{
+    text-decoration: none;
+    color: #e5e5e5;
+}
+
+.header > .list > .textBusca > .busca{
+    color: #2d1818;
+    background-color: rgba(229,229,229,0.9);
+    border-radius: 5px;
+}
+
 .item {
     margin-top: 13px;
     margin-right: 1em;
@@ -23,6 +34,22 @@
 }
 
 .item:hover:active{
+    color: #e5e5e5 bold;
+}
+
+.busca{
+    /* margin-top: 13px; */
+    margin-right: 1em;
+    text-decoration: none;
+    /* width: 200px;
+    height: 35px; */
+    color: #2d1818;
+    /* background-color: #e5e5e5; */
+}
+.buscabtn{
+    padding-top: 13px;
+    margin-right: 1em;
+    text-decoration: none;
     color: #e5e5e5 bold;
 }
 
