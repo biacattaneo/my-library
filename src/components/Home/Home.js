@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import styles from './Home.module.css'
 import context from '../GlobalVariables';
-import { BsBookmarkPlus, BsBookmarkCheck, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart } from "react-icons/bs";
+import { BsBookmarkPlus, BsBookmarkCheck, BsBookmarkCheckFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart } from "react-icons/bs";
 import { AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
@@ -17,6 +17,8 @@ import PropTypes from 'prop-types';
 //BsBookmarkCheckFill - Lido preenchido
 //BsBookmarkDash - Lendo 
 //BsBookmarkDashFill - Lendo preenchido
+//BsBookmarkPlus - Quero ler
+//BsBookmarkPlusFill - Quero ler preenchido
 //BsBookmarkX - abandonado
 //BsBookmarkXFill - abandonado preenchido
 //BsBookmarkHeart - Favorito
@@ -98,6 +100,43 @@ function Home() {
         setValue(newValue);
     };
 
+    const [BookmarkCheck, setBookmarkCheck] = useState('false'); //Lido
+    const [BookmarkPlus, setBookmarkPlus] = useState('false'); //Quero ler
+    const [BookmarkDash, setBookmarkDash] = useState('false'); //Lendo
+    const [BookmarkX, setBookmarkX] = useState('false'); //Abandonado
+
+    function clickLido(){
+        setBookmarkCheck(true);
+        setBookmarkPlus(false);
+        setBookmarkDash(false);
+        setBookmarkX(false);
+    }
+    
+    function clickLendo(){
+        setBookmarkCheck(false);
+        setBookmarkPlus(false);
+        setBookmarkDash(true);
+        setBookmarkX(false);
+    }
+
+    function clickQueroLer(){
+        setBookmarkCheck(false);
+        setBookmarkPlus(true);
+        setBookmarkDash(false);
+        setBookmarkX(false);
+    }
+
+    const [AiOutlineBook, setAiOutlineBook] = useState('false'); //Tenho
+    const [AiFillBook, setAiFillBook] = useState('false'); //Quero ter
+    const [BsBookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
+
+    function clickAbandonei(){
+        setBookmarkCheck(false);
+        setBookmarkPlus(false);
+        setBookmarkDash(false);
+        setBookmarkX(true);
+    }
+
     return (
         <>
             <small>Todos os livros nesta página são e-books encontrados na Google Play Livros</small>
@@ -107,9 +146,8 @@ function Home() {
                         <th>Capa</th>
                         <th>Livro</th>
                         <th>Preço</th>
-                        <th></th>
+                        <th> </th>
                     </tr>
-
 
                     {resposta['items'] && resposta['items'].map((val, key) => {
                         return (
@@ -127,33 +165,24 @@ function Home() {
                                     onClose={handleClose}
                                     aria-labelledby="modal-modal-title"
                                     aria-describedby="modal-modal-description"
-                                    disableEscapeKeyDown={false}
-                                >
+                                    disableEscapeKeyDown={false}>
                                     <Box sx={style}>
                                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                                             <Tab label="Leitura" {...a11yProps(0)} />
                                             <Tab label="Minha biblioteca" {...a11yProps(1)} />
-                                            {/* <Tab label="Item Three" {...a11yProps(2)} /> */}
                                         </Tabs>
-                                        {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-                                                Leitura
-                                            </Typography> */}
-                                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                            <BsBookmarkCheck />
-                                            <BsBookmarkDash />
-                                            <BsBookmarkX />
-                                            <BsBookmarkHeart />
-                                        </Typography>
+                                        <TabPanel value={value} index={0}>
+                                            {BookmarkCheck ? <BsBookmarkCheck onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> : <BsBookmarkCheckFill onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> } Lido<br />
+                                            <BsBookmarkDash /> Lendo<br />
+                                            <BsBookmarkPlus /> Quero ler<br />
+                                            <BsBookmarkX /> Abandonado
+                                        </TabPanel>
+                                        <TabPanel value={value} index={1}>
+                                            <AiOutlineBook /> Quero ter<br />
+                                            <AiFillBook /> Tenho<br />
+                                            <BsBookmarkHeart /> Favorito
+                                        </TabPanel>
                                     </Box>
-                                    {/* <TabPanel value={value} index={0}>
-                                        Item One
-                                    </TabPanel>
-                                    <TabPanel value={value} index={1}>
-                                        Item Two
-                                    </TabPanel>
-                                    <TabPanel value={value} index={2}>
-                                        Item Three
-                                    </TabPanel> */}
                                 </ModalUnstyled>
                             </tr>
                         )
