@@ -9,6 +9,7 @@ import MyContext from './components/GlobalVariables';
 
 function App() {
   const [parametroDeBusca, setParametroDeBusca] = useState('');
+  const [usuario, setUsuario] = useState('');
 
   return (
     <MyContext.Provider value={[parametroDeBusca, setParametroDeBusca]}>

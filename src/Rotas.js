@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, BrowserRouter, Link } from 'react-router-dom'
 import Home from './components/Home/Home';
-import Book from './components/book/Book';
 import Login from './components/Login/Login';
 import DetalhePerfilFinancas from './components/DetalhePerfilFinancas/DetalhePerfilFinancas';
 import { AiOutlineHistory } from "react-icons/ai";

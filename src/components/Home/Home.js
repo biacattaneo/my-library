@@ -9,6 +9,7 @@ import { AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
 import PropTypes from 'prop-types';
+import firebase from '../config/server';
 
 
 //BsBookmarkPlus - adicionar
@@ -30,7 +31,12 @@ function Home() {
 
     const [resposta, setResposta] = useState({});
     const [searchBookParam, setSearchBookParam] = useState('Harry%20Potter');
-    const [parametroDeBusca, setparametroDeBusca] = useContext(context);
+    const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
+    
+
+    useEffect(()=>{
+        alert(usuario);
+    },[usuario])
 
     useEffect(() => {
         setSearchBookParam(parametroDeBusca)
@@ -172,6 +178,7 @@ function Home() {
                                             <Tab label="Minha biblioteca" {...a11yProps(1)} />
                                         </Tabs>
                                         <TabPanel value={value} index={0}>
+                                            {usuario && <h1>OI</h1>}
                                             {BookmarkCheck ? <BsBookmarkCheck onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> : <BsBookmarkCheckFill onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> } Lido<br />
                                             <BsBookmarkDash /> Lendo<br />
                                             <BsBookmarkPlus /> Quero ler<br />
