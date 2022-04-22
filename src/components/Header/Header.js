@@ -18,11 +18,11 @@ function Header(props) {
 
     return (
         <div className={styles.header}>
-            {/* <Home searchQuery={'batata frita'}></Home> */}
             <BrowserRouter>
                 <ul className={styles.list}>
                     <li className={styles.item}>
-                        <a href="/home">Home</a>
+                        {/* <a href="/home">Home</a> */}
+                        <Link to='/home'>Home</Link>
                         {/* <p><Link to='/home' >Home</Link></p> */}
                     </li>
                     <li className={styles.item}>

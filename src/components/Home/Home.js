@@ -35,7 +35,8 @@ function Home() {
     
 
     useEffect(()=>{
-        alert(usuario);
+        usuario['user'] && alert(usuario['user']['email']);
+        console.log(usuario);
     },[usuario])
 
     useEffect(() => {
