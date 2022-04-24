@@ -41,8 +41,8 @@ function Header(props) {
                     <AiOutlineSearch className={styles.buscabtn} />
                 </li>
                 <li>
-                    {/* <a href="/login"><AiOutlineUser className={styles.loginIcon} /></a> */}
-                    {/* <Link to='/login'><AiOutlineUser className={styles.loginIcon} /></Link> */}
+                    <a href="/login"><AiOutlineUser className={styles.loginIcon} /></a>
+                    <Link to='/login'><AiOutlineUser className={styles.loginIcon} /></Link>
                 </li>
             </ul>
         </div>
