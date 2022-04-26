@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import styles from './Home.module.css'
 import context from '../GlobalVariables';
-import { BsBookmarkPlus, BsBookmarkCheck, BsBookmarkCheckFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart } from "react-icons/bs";
+import { BsBookmarkPlus, BsBookmarkPlusFill, BsBookmarkCheck, BsBookmarkCheckFill, BsFillBookmarkHeartFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart, BsBookmarkDashFill, BsBookmarkXFill } from "react-icons/bs";
 import { AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
@@ -32,12 +32,12 @@ function Home() {
     const [resposta, setResposta] = useState({});
     const [searchBookParam, setSearchBookParam] = useState('Harry%20Potter');
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
-    
 
-    useEffect(()=>{
+
+    useEffect(() => {
         usuario['user'] && alert(usuario['user']['email']);
         console.log(usuario);
-    },[usuario])
+    }, [usuario])
 
     useEffect(() => {
         setSearchBookParam(parametroDeBusca)
@@ -112,36 +112,36 @@ function Home() {
     const [BookmarkDash, setBookmarkDash] = useState('false'); //Lendo
     const [BookmarkX, setBookmarkX] = useState('false'); //Abandonado
 
-    function clickLido(){
-        setBookmarkCheck(true);
-        setBookmarkPlus(false);
-        setBookmarkDash(false);
-        setBookmarkX(false);
-    }
-    
-    function clickLendo(){
-        setBookmarkCheck(false);
-        setBookmarkPlus(false);
-        setBookmarkDash(true);
-        setBookmarkX(false);
-    }
-
-    function clickQueroLer(){
+    function clickLido() {
         setBookmarkCheck(false);
         setBookmarkPlus(true);
+        setBookmarkDash(true);
+        setBookmarkX(true);
+    }
+
+    function clickLendo() {
+        setBookmarkCheck(true);
+        setBookmarkPlus(true);
         setBookmarkDash(false);
-        setBookmarkX(false);
+        setBookmarkX(true);
+    }
+
+    function clickQueroLer() {
+        setBookmarkCheck(true);
+        setBookmarkPlus(false);
+        setBookmarkDash(true);
+        setBookmarkX(true);
     }
 
     const [AiOutlineBook, setAiOutlineBook] = useState('false'); //Tenho
     const [AiFillBook, setAiFillBook] = useState('false'); //Quero ter
     const [BsBookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
 
-    function clickAbandonei(){
-        setBookmarkCheck(false);
-        setBookmarkPlus(false);
-        setBookmarkDash(false);
-        setBookmarkX(true);
+    function clickAbandonei() {
+        setBookmarkCheck(true);
+        setBookmarkPlus(true);
+        setBookmarkDash(true);
+        setBookmarkX(false);
     }
 
     return (
@@ -179,13 +179,15 @@ function Home() {
                                             <Tab label="Minha biblioteca" {...a11yProps(1)} />
                                         </Tabs>
                                         <TabPanel value={value} index={0}>
-                                            {usuario && <h1>OI</h1>}
-                                            {BookmarkCheck ? <BsBookmarkCheck onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> : <BsBookmarkCheckFill onClick={()=>{setBookmarkCheck(!BookmarkCheck)}}/> } Lido<br />
-                                            <BsBookmarkDash /> Lendo<br />
-                                            <BsBookmarkPlus /> Quero ler<br />
-                                            <BsBookmarkX /> Abandonado
+                                            {BookmarkCheck ? <BsBookmarkCheck onClick={() => { clickLido(!BookmarkCheck) }} /> : <BsBookmarkCheckFill onClick={() => { clickLido(!BookmarkCheck) }} />} Lido<br />
+                                            {BookmarkDash ? <BsBookmarkDash onClick={() => { clickLendo(!BookmarkDash) }} /> : <BsBookmarkDashFill onClick={() => { clickLendo(!BookmarkDash) }} />} Lendo<br />
+                                            {BookmarkPlus ? <BsBookmarkPlus onClick={() => { clickQueroLer(!BookmarkPlus) }} /> : <BsBookmarkPlusFill onClick={() => { clickQueroLer(!BookmarkPlus) }} />} Quero ler<br />
+                                            {BookmarkX ? <BsBookmarkX onClick={() => { clickAbandonei(!BookmarkX) }} /> : <BsBookmarkXFill onClick={() => { clickAbandonei(!BookmarkX) }} />} Abandonado<br />
                                         </TabPanel>
                                         <TabPanel value={value} index={1}>
+                                        {/* {AiOutlineBook ? <AiOutlineBook onClick={() => { setOutlineBook(!AiOutlineBook) }} /> : <AiOutlineBookFill onClick={() => { setOutlineBook(!AiOutlineBook) }} />} Quero ter<br /> */}
+                                        {/* {AiFillBook ? <AiFillBook onClick={() => { setFillBook(!AiFillBook) }} /> : <AiFillBookFill onClick={() => { setFillBook(!AiFillBook) }} />} Tenho<br /> */}
+                                        {/* {BsBookmarkHeart ? <BsBookmarkHeart onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} /> : <BsFillBookmarkHeartFill onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} />} Favorito<br /> */}
                                             <AiOutlineBook /> Quero ter<br />
                                             <AiFillBook /> Tenho<br />
                                             <BsBookmarkHeart /> Favorito

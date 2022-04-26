@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import firebase from '../config/server';
@@ -16,13 +16,14 @@ function Login() {
     const [user, setUser] = useState({})
     const auth = getAuth();
     const dbRef = ref(getDatabase());
+    const navigate = useNavigate();
     async function logarGoogle() {
 
         const result = await signInWithPopup(auth, provider)
         await setUsuario(result);
-        console.log(usuario);
+        navigate('/perfilUsuario');
+        // console.log(usuario);
     }
-    
     useEffect(()=>{console.log(usuario)},[usuario]);
 
     return (
@@ -38,7 +39,7 @@ function Login() {
                 <p><input type='submit' value='Entrar' className={styles.buttonLogin}></input></p>
 
             </form>
-            <p><button onClick={() => { logarGoogle() }}>< FcGoogle />Google<Link to='/perfilUsuario'></Link></button></p>
+            <p><button onClick={() => { logarGoogle() }}>< FcGoogle />Google</button></p>
             <p className={styles.labelNaoTem}>Não tem cadastro? Cadastre-se aqui <Link to='/cadastro'><AiOutlineUserAdd className={styles.CadastroIcon} /></Link></p>
             
         </>
