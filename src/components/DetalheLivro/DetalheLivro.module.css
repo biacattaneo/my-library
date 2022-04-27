@@ -18,7 +18,7 @@
 
 .divBtnCheck{
     margin: 80px;
-    background-color: red;
+    /* background-color: red; */
     
 }
 
@@ -27,3 +27,15 @@
     margin-left: 80px;
     margin-right: 80px;
 }
+
+/* .modal{
+    position: 'absolute';
+    top: '50%';
+    left: '50%';
+    transform: 'translate(-50%, -50%)';
+    width: 400;
+    background-color:'background.paper' ;
+    box-shadow:'1px 1px 1.5px black' ;
+    /* // border: '2px solid #000'; 
+    padding: 4;
+} */

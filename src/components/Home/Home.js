@@ -4,35 +4,18 @@ import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import styles from './Home.module.css'
 import context from '../GlobalVariables';
-import { BsBookmarkPlus, BsBookmarkPlusFill, BsBookmarkCheck, BsBookmarkCheckFill, BsFillBookmarkHeartFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart, BsBookmarkDashFill, BsBookmarkXFill } from "react-icons/bs";
+import { BsBookmarkPlus } from "react-icons/bs";
 import { AiOutlineBook, AiFillBook } from "react-icons/ai";
-import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
-import ModalUnstyled from '@mui/base/ModalUnstyled';
-import PropTypes from 'prop-types';
-import firebase from '../config/server';
+import {  Button } from '@mui/material';
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
-
-//BsBookmarkPlus - adicionar
-//BsBookmarkPlusFill - adicionar preenchido
-//BsBookmarkCheck - Lido
-//BsBookmarkCheckFill - Lido preenchido
-//BsBookmarkDash - Lendo 
-//BsBookmarkDashFill - Lendo preenchido
-//BsBookmarkPlus - Quero ler
-//BsBookmarkPlusFill - Quero ler preenchido
-//BsBookmarkX - abandonado
-//BsBookmarkXFill - abandonado preenchido
-//BsBookmarkHeart - Favorito
-//BsFillBookmarkHeartFill - Favorito preenchido
-//AiOutlineBook - Quero comprar
-//AiFillBook - Tenho
 
 function Home() {
 
     const [resposta, setResposta] = useState({});
     const [searchBookParam, setSearchBookParam] = useState('Harry%20Potter');
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         usuario['user'] && alert(usuario['user']['email']);
@@ -49,100 +32,13 @@ function Home() {
         });
     }, [searchBookParam])
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        // border: '2px solid #000',
-        boxShadow: '1px 1px 1.5px black',
-        p: 4
-    };
+    async function detalhelivro() {
 
-    // function BasicModal() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    // }
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        <Typography>{children}</Typography>
-                    </Box>
-                )}
-            </div>
-        );
+        // const result = await signInWithPopup(auth, provider)
+        // await setUsuario(result);
+        // navigate(`/detalhelivro/${val['id']}`);
     }
 
-    TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.number.isRequired,
-        value: PropTypes.number.isRequired,
-    };
-
-    function a11yProps(index) {
-        return {
-            id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
-    }
-
-    // export default function BasicTabs() {
-    const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
-    const [BookmarkCheck, setBookmarkCheck] = useState('false'); //Lido
-    const [BookmarkPlus, setBookmarkPlus] = useState('false'); //Quero ler
-    const [BookmarkDash, setBookmarkDash] = useState('false'); //Lendo
-    const [BookmarkX, setBookmarkX] = useState('false'); //Abandonado
-
-    function clickLido() {
-        setBookmarkCheck(false);
-        setBookmarkPlus(true);
-        setBookmarkDash(true);
-        setBookmarkX(true);
-    }
-
-    function clickLendo() {
-        setBookmarkCheck(true);
-        setBookmarkPlus(true);
-        setBookmarkDash(false);
-        setBookmarkX(true);
-    }
-
-    function clickQueroLer() {
-        setBookmarkCheck(true);
-        setBookmarkPlus(false);
-        setBookmarkDash(true);
-        setBookmarkX(true);
-    }
-
-    const [AiOutlineBook, setAiOutlineBook] = useState('false'); //Tenho
-    const [AiFillBook, setAiFillBook] = useState('false'); //Quero ter
-    const [BsBookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
-
-    function clickAbandonei() {
-        setBookmarkCheck(true);
-        setBookmarkPlus(true);
-        setBookmarkDash(true);
-        setBookmarkX(false);
-    }
 
     return (
         <>
@@ -160,40 +56,15 @@ function Home() {
                         return (
                             <tr key={key}>
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                    <td>{val['volumeInfo']['imageLinks'] ? <img onClick={() => { window.location.href = `/detalhelivro/${val['id']}` }} src={val['volumeInfo']['imageLinks']['thumbnail']} alt='Foto' style={{ height: '120px', weight: '100px', backgroundSize: 'cover', overflow: 'hidden', backgroundPosition: 'center' }}></img> : <h4 onClick={() => { window.location.href = `/detalhelivro/${val['id']}` }} style={{ backgroundColor: 'rgba(45,24,24,0.8)', color: 'white', height: '120px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>SEM<br />CAPA</h4>}</td>
+                                    <td>{val['volumeInfo']['imageLinks'] ? <img onClick={() => { navigate(`/detalhelivro/${val['id']}`); }} src={val['volumeInfo']['imageLinks']['thumbnail']} alt='Foto' style={{ height: '120px', weight: '100px', backgroundSize: 'cover', overflow: 'hidden', backgroundPosition: 'center' }}></img> : <h4 onClick={() => { navigate(`/detalhelivro/${val['id']}`); }} style={{ backgroundColor: 'rgba(45,24,24,0.8)', color: 'white', height: '120px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>SEM<br />CAPA</h4>}</td>
+                                    {/* <td>{val['volumeInfo']['imageLinks'] ? <img onClick={() => { window.location.href = `/detalhelivro/${val['id']}` }} src={val['volumeInfo']['imageLinks']['thumbnail']} alt='Foto' style={{ height: '120px', weight: '100px', backgroundSize: 'cover', overflow: 'hidden', backgroundPosition: 'center' }}></img> : <h4 onClick={() => { window.location.href = `/detalhelivro/${val['id']}` }} style={{ backgroundColor: 'rgba(45,24,24,0.8)', color: 'white', height: '120px', width: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>SEM<br />CAPA</h4>}</td> */}
                                 </div>
                                 <td>{val['volumeInfo']['title']}</td>
                                 {val['saleInfo']['listPrice'] ? (<td>R${val['saleInfo']['listPrice']['amount']}</td>) : (<td>Não está a venda</td>)}
                                 <td>
-                                    <Button onClick={handleOpen}><BsBookmarkPlus /></Button>
+                                    <Button><BsBookmarkPlus onClick={() => {navigate(`/detalhelivro/${val['id']}`)}}/></Button>
                                 </td>
-                                <ModalUnstyled
-                                    open={open}
-                                    onClose={handleClose}
-                                    aria-labelledby="modal-modal-title"
-                                    aria-describedby="modal-modal-description"
-                                    disableEscapeKeyDown={false}>
-                                    <Box sx={style}>
-                                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                            <Tab label="Leitura" {...a11yProps(0)} />
-                                            <Tab label="Minha biblioteca" {...a11yProps(1)} />
-                                        </Tabs>
-                                        <TabPanel value={value} index={0}>
-                                            {BookmarkCheck ? <BsBookmarkCheck onClick={() => { clickLido(!BookmarkCheck) }} /> : <BsBookmarkCheckFill onClick={() => { clickLido(!BookmarkCheck) }} />} Lido<br />
-                                            {BookmarkDash ? <BsBookmarkDash onClick={() => { clickLendo(!BookmarkDash) }} /> : <BsBookmarkDashFill onClick={() => { clickLendo(!BookmarkDash) }} />} Lendo<br />
-                                            {BookmarkPlus ? <BsBookmarkPlus onClick={() => { clickQueroLer(!BookmarkPlus) }} /> : <BsBookmarkPlusFill onClick={() => { clickQueroLer(!BookmarkPlus) }} />} Quero ler<br />
-                                            {BookmarkX ? <BsBookmarkX onClick={() => { clickAbandonei(!BookmarkX) }} /> : <BsBookmarkXFill onClick={() => { clickAbandonei(!BookmarkX) }} />} Abandonado<br />
-                                        </TabPanel>
-                                        <TabPanel value={value} index={1}>
-                                        {/* {AiOutlineBook ? <AiOutlineBook onClick={() => { setOutlineBook(!AiOutlineBook) }} /> : <AiOutlineBookFill onClick={() => { setOutlineBook(!AiOutlineBook) }} />} Quero ter<br /> */}
-                                        {/* {AiFillBook ? <AiFillBook onClick={() => { setFillBook(!AiFillBook) }} /> : <AiFillBookFill onClick={() => { setFillBook(!AiFillBook) }} />} Tenho<br /> */}
-                                        {/* {BsBookmarkHeart ? <BsBookmarkHeart onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} /> : <BsFillBookmarkHeartFill onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} />} Favorito<br /> */}
-                                            <AiOutlineBook /> Quero ter<br />
-                                            <AiFillBook /> Tenho<br />
-                                            <BsBookmarkHeart /> Favorito
-                                        </TabPanel>
-                                    </Box>
-                                </ModalUnstyled>
+                                
                             </tr>
                         )
                     })}

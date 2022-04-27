@@ -47,7 +47,7 @@ function Usuario({ name, bio, tempo }) {
                         <AiOutlineUser />
                     </div>
                     {usuario['user']['displayName'] && <p>Nome: {usuario['user']['displayName']}</p>}
-                    {perfil.perfil.bio ? <p>Bio: {perfil.perfil.bio} </p> : <p>Este usuário não tem bio cadastrada :(</p>}
+                    {perfil.perfil && perfil.perfil.bio ? <p>Bio: {perfil.perfil.bio} </p> : <p>Este usuário não tem bio cadastrada :(</p>}
                     <p>Aqui desde:{tempo}</p>
                     <button className={styles.btnPerfilFinancas} value='' ><Link to='/detalhePerfilFinancas'>Suas finanças literárias</Link></button>
                 </div>
@@ -66,7 +66,7 @@ function Usuario({ name, bio, tempo }) {
                         {perfil.livrosFavoritos ? <p>{perfil.livrosFavoritos}</p> : <p>Esta categoria ainda está vazia</p>}
                     </div>
                     <h3>Tenho</h3>
-                    <small>Quanto vale minha estante: </small>
+                    {/* <small>Quanto vale minha estante: </small> */}
                     <div>
                         {perfil.livrosTenho ? <p>{perfil.livrosTenho}</p> : <p>Esta categoria ainda está vazia</p>}
                     </div>
