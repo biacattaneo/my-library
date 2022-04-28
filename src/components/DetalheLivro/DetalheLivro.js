@@ -10,7 +10,11 @@ import { AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
 import PropTypes from 'prop-types';
-import { getDatabase, ref, get, child, set} from "firebase/database";
+import { getDatabase, ref, get, child, set, remove } from "firebase/database";
+// import { initializeApp } from 'firebase-admin/app';
+// import { database } from 'firebase-admin';
+
+
 
 
 //BsBookmarkPlus - adicionar
@@ -34,9 +38,6 @@ function DetalheLivro() {
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
     const dbRef = ref(getDatabase());
     const [fbIterator, setFbIterator] = useState({});
-    useEffect(() => {
-        usuario['user'] && alert(usuario['user']['email']);
-    }, [usuario])
 
     useEffect(() => {
 
@@ -44,17 +45,16 @@ function DetalheLivro() {
             setResposta(res.data);
             // console.log(res.data)
         });
+
         get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
             if (snapshot.exists()) {
-                // console.log(snapshot.val());
-                // console.log(snapshot.val());
                 setFbIterator(snapshot.val());
                 let it = snapshot.val();
                 for (var i in it) {
                     console.log(i);
-                    if(params.id === i ){
-                        console.log('deu bom :D');
+                    if (params.id === i) {
                         setBookmarkX(false);
+                        console.log('abandonados');
                     }
                 }
             } else {
@@ -63,6 +63,62 @@ function DetalheLivro() {
         }).catch((error) => {
             console.error(error);
         });
+
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setFbIterator(snapshot.val());
+                let it = snapshot.val();
+                for (var i in it) {
+                    console.log(i);
+                    if (params.id === i) {
+                        setBookmarkCheck(false);
+                        console.log('lidos');
+                    }
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setFbIterator(snapshot.val());
+                let it = snapshot.val();
+                for (var i in it) {
+                    console.log(i);
+                    if (params.id === i) {
+                        setBookmarkPlus(false);
+                        console.log('queroler');
+                    }
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                setFbIterator(snapshot.val());
+                let it = snapshot.val();
+                for (var i in it) {
+                    console.log(i);
+                    if (params.id === i) {
+                        setBookmarkDash(false);
+                        console.log('lendo');
+                    }
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        // writeUserDataLido()
+
     }, []);
 
     useEffect(() => {
@@ -137,7 +193,7 @@ function DetalheLivro() {
         setBookmarkPlus(true);
         setBookmarkDash(true);
         setBookmarkX(true);
-        // writeUserDataLido();
+        writeUserDataLido();
     }
 
     function clickLendo() {
@@ -145,7 +201,7 @@ function DetalheLivro() {
         setBookmarkPlus(true);
         setBookmarkDash(false);
         setBookmarkX(true);
-        // writeUserDataLendo();
+        writeUserDataLendo();
     }
 
     function clickQueroLer() {
@@ -153,7 +209,7 @@ function DetalheLivro() {
         setBookmarkPlus(false);
         setBookmarkDash(true);
         setBookmarkX(true);
-        // writeUserDataQueroLer();
+        writeUserDataQueroLer();
     }
 
     function clickAbandonei() {
@@ -161,12 +217,12 @@ function DetalheLivro() {
         setBookmarkPlus(true);
         setBookmarkDash(true);
         setBookmarkX(false);
-        // writeUserDataAbandonei();
+        writeUserDataAbandonado();
     }
 
-    const [AiOutlineBook, setAiOutlineBook] = useState('false'); //Tenho
-    const [AiFillBook, setAiFillBook] = useState('false'); //Quero ter
-    const [BsBookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
+    const [OutlineBook, setAiOutlineBook] = useState('false'); //Tenho
+    const [FillBook, setAiFillBook] = useState('false'); //Quero ter
+    const [BookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
 
 
     function clickTenho() {
@@ -186,53 +242,123 @@ function DetalheLivro() {
         // writeUserDataFavoritos();
     }
 
-    // function writeUserDataLido() {
-    //     const db = getDatabase();   
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         // livrosLidos: [..., resposta.items]
-    //     });
-    // }
+    function writeUserDataLido() {
+        const db = getDatabase();
+        
+        let result = {};        
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
 
-    // function writeUserDataQueroLer() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosQueroler: {}
-    //     });
-    // }
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+            // result = { ...result, [params.id]: '' };
+            // set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+        })
+    }
 
-    // function writeUserDataLendo() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosLendo: {}
-    //     });
-    // }
+    function writeUserDataLendo() {
+        const db = getDatabase();
+        let result = {};
+        // Buscando livros lendo..
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            //Armazenando livros lendo..
+            result = snapshot.val();
+            result = { ...result, [params.id]: '' };
+            console.log(result);
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLendo`), result);
+            
+        })
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS LIDOS PARA REMOVER SE EXISTIR...
+        result = {};        
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
 
-    // function writeUserDataTenho() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosTenho: {}
-    //     });
-    // }
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+            // result = { ...result, [params.id]: '' };
+            // set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+        })
+         
+    }
+    function writeUserDataQueroLer() {
+        const db = getDatabase();
+        let result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            result = { ...result, [params.id]: '' };
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroLer`), result);
+        })
+    }
+    function writeUserDataAbandonado() {
+        const db = getDatabase();
+        let result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            result = { ...result, [params.id]: '' };
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosAbandonados`), result);
+        })
+    }
+    function writeUserDataTenho() {
+        const db = getDatabase();
+        let result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosTenho`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            result = { ...result, [params.id]: '' };
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosTenho`), result);
+        })
+    }
+    function writeUserDataQueroTer() {
+        const db = getDatabase();
+        let result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroTer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            result = { ...result, [params.id]: '' };
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroTer`), result);
+        })
+    }
 
-    // function writeUserDataQueroTer() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosQueroTer: {}
-    //     });
-    // }
-
-    // function writeUserDataFavoritos() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosFavoritos: {}
-    //     });
-    // }
-    // function writeUserDataAbandonei() {
-    //     const db = getDatabase();
-    //     set(ref(db, 'usuarios/' + usuario.user.uid), {
-    //         livrosAbandonei: {}
-    //     });
-    // }
+    function writeUserDataFavoritos() {
+        const db = getDatabase();
+        let result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosFavoritos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            console.log(result);
+            // console.log(result);
+            result = { ...result, [params.id]: '' };
+            // console.log(result);
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosFavoritos`), result);
+        })
+    }
 
     return (
         <>
@@ -269,9 +395,9 @@ function DetalheLivro() {
                                 {BookmarkX ? <BsBookmarkX onClick={() => { clickAbandonei(!BookmarkX) }} /> : <BsBookmarkXFill onClick={() => { clickAbandonei(!BookmarkX) }} />} Abandonado<br />
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                {/* {AiOutlineBook ? <AiOutlineBook onClick={() => { setOutlineBook(!AiOutlineBook) }} /> : <AiOutlineBookFill onClick={() => { setOutlineBook(!AiOutlineBook) }} />} Quero ter<br /> */}
-                                {/* {AiFillBook ? <AiFillBook onClick={() => { setFillBook(!AiFillBook) }} /> : <AiFillBookFill onClick={() => { setFillBook(!AiFillBook) }} />} Tenho<br /> */}
-                                {/* {BsBookmarkHeart ? <BsBookmarkHeart onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} /> : <BsFillBookmarkHeartFill onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} />} Favorito<br /> */}
+                                {/* {OutlineBook ? <AiOutlineBook onClick={() => { setAiOutlineBook(!AiOutlineBook); }} /> : <AiFillBook onClick={() => { setAiFillBook(!AiOutlineBook); setAiOutlineBook(!AiOutlineBook) }} />} Quero ter<br /> */}
+                                {/* {FillBook ? <AiFillBook onClick={() => { setAiFillBook(!AiFillBook) }} /> : <AiFillBookFill onClick={() => { setAiFillBook(!AiFillBook) }} />} Tenho<br /> */}
+                                {/* {BookmarkHeart ? <BsBookmarkHeart onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} /> : <BsFillBookmarkHeartFill onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} />} Favorito<br /> */}
                                 <AiOutlineBook /> Quero ter<br />
                                 <AiFillBook /> Tenho<br />
                                 <BsBookmarkHeart /> Favorito

@@ -25,6 +25,7 @@ function Login() {
         get(child(dbRef, `usuarios/${result.user.uid}`)).then((snapshot) => {
             if (snapshot.exists()) {
                 console.log(snapshot.val());
+                navigate('/perfilUsuario');
             } else {
                 console.log("No data available.. making one");
                 set(ref(db, `usuarios/${result.user.uid}`), {
@@ -47,6 +48,7 @@ function Login() {
                         "saldoMensal": 50
                     }
                 })
+                navigate('/perfilUsuario');
             }
         }).catch((error) => {
             console.error(error);
