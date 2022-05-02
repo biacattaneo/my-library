@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './DetalheLivro.module.css';
-import { BsBookmarkPlus, BsBookmarkPlusFill, BsBookmarkCheck, BsBookmarkCheckFill, BsFillBookmarkHeartFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart, BsBookmarkDashFill, BsBookmarkXFill } from "react-icons/bs";
+import { BsBookmarkPlus, BsBookmarkPlusFill, BsBookmarkCheck, BsBookmarkCheckFill, BsBookmarkHeartFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart, BsBookmarkDashFill, BsBookmarkXFill } from "react-icons/bs";
 import { AiOutlineBook, AiFillBook } from "react-icons/ai";
 import { Modal, Tabs, Tab, Box, Button, Typography } from '@mui/material';
 import ModalUnstyled from '@mui/base/ModalUnstyled';
@@ -13,9 +13,6 @@ import PropTypes from 'prop-types';
 import { getDatabase, ref, get, child, set, remove } from "firebase/database";
 // import { initializeApp } from 'firebase-admin/app';
 // import { database } from 'firebase-admin';
-
-
-
 
 //BsBookmarkPlus - adicionar
 //BsBookmarkPlusFill - adicionar preenchido
@@ -28,7 +25,7 @@ import { getDatabase, ref, get, child, set, remove } from "firebase/database";
 //BsBookmarkX - abandonado
 //BsBookmarkXFill - abandonado preenchido
 //BsBookmarkHeart - Favorito
-//BsFillBookmarkHeartFill - Favorito preenchido
+//BsBookmarkHeartFill - Favorito preenchido
 //AiOutlineBook - Quero comprar
 //AiFillBook - Tenho
 
@@ -183,10 +180,15 @@ function DetalheLivro() {
         setValue(newValue);
     };
 
-    const [BookmarkCheck, setBookmarkCheck] = useState('false'); //Lido
-    const [BookmarkPlus, setBookmarkPlus] = useState('false'); //Quero ler
-    const [BookmarkDash, setBookmarkDash] = useState('false'); //Lendo
-    const [BookmarkX, setBookmarkX] = useState('false'); //Abandonado
+    const [BookmarkCheck, setBookmarkCheck] = useState(true); //Lido
+    const [BookmarkPlus, setBookmarkPlus] = useState(true); //Quero ler
+    const [BookmarkDash, setBookmarkDash] = useState(true); //Lendo
+    const [BookmarkX, setBookmarkX] = useState(true); //Abandonado
+
+    const [BookQueroTer, setBookQueroTer] = useState(true); //Vazio
+    const [BookTenho, setBookTenho] = useState(true); //Preenchido
+    const [BookmarkHeart, setBookmarkHeart] = useState(true); //Favorito
+
 
     function clickLido() {
         setBookmarkCheck(false);
@@ -219,46 +221,82 @@ function DetalheLivro() {
         setBookmarkX(false);
         writeUserDataAbandonado();
     }
-
-    const [OutlineBook, setAiOutlineBook] = useState('false'); //Tenho
-    const [FillBook, setAiFillBook] = useState('false'); //Quero ter
-    const [BookmarkHeart, setBookmarkHeart] = useState('false'); //Favorito
-
-
+    
     function clickTenho() {
-        setAiOutlineBook(false);
-        setAiFillBook(true);
-        // writeUserDataTenho();
+        setBookTenho(false);//preencher tenho
+        setBookQueroTer(true); //deixar o quero ter vazio
+        writeUserDataTenho();
     }
 
     function clickQueroTer() {
-        setAiOutlineBook(true);
-        setAiFillBook(false);
-        // writeUserDataQueroTer();
+        setBookQueroTer(false); //preencher quero ter
+        setBookTenho(true); //deixar o tenho vazio
+        writeUserDataQueroTer();
     }
 
     function clickFavorito() {
-        setBookmarkHeart(true);
-        // writeUserDataFavoritos();
+        setBookmarkHeart(!BookmarkHeart);
+        writeUserDataFavoritos();
     }
 
     function writeUserDataLido() {
         const db = getDatabase();
-        
-        let result = {};        
+        let result = {};
+        // Buscando livros lidos..
         get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            //Armazenando livros lidos..
+            result = snapshot.val();
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
+            console.log(result);
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS LENDO PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
             if (!snapshot.exists()) {
                 result = {};
             }
 
             result = snapshot.val();
             delete result[params.id];
-            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
-            // result = { ...result, [params.id]: '' };
-            // set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLendo`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS QUERO LER PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroLer`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS ABANDONADOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosAbandonados`), result);
         })
     }
 
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO LENDO
     function writeUserDataLendo() {
         const db = getDatabase();
         let result = {};
@@ -269,14 +307,14 @@ function DetalheLivro() {
             }
             //Armazenando livros lendo..
             result = snapshot.val();
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             console.log(result);
             set(ref(db, `usuarios/${usuario.user.uid}/livrosLendo`), result);
-            
+
         })
         //////////////////////////////////////        
         // BUSCANDO DO LIVROS LIDOS PARA REMOVER SE EXISTIR...
-        result = {};        
+        result = {};
         get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
             if (!snapshot.exists()) {
                 result = {};
@@ -285,11 +323,37 @@ function DetalheLivro() {
             result = snapshot.val();
             delete result[params.id];
             set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
-            // result = { ...result, [params.id]: '' };
-            // set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
         })
-         
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS QUERO LER PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroLer`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS ABANDONADOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosAbandonados`), result);
+        })
     }
+
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO QUERO LER
     function writeUserDataQueroLer() {
         const db = getDatabase();
         let result = {};
@@ -299,10 +363,52 @@ function DetalheLivro() {
             }
             // Retorno existe
             result = snapshot.val();
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroLer`), result);
         })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS LIDOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS LENDO PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLendo`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS ABANDONADOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosAbandonados`), result);
+        })
     }
+
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO ABANDONADO
     function writeUserDataAbandonado() {
         const db = getDatabase();
         let result = {};
@@ -312,10 +418,52 @@ function DetalheLivro() {
             }
             // Retorno existe
             result = snapshot.val();
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             set(ref(db, `usuarios/${usuario.user.uid}/livrosAbandonados`), result);
         })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS LIDOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLidos`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS QUERO LER PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroLer`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS ABANDONADOS PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosLendo`), result);
+        })
     }
+
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO TENHO
     function writeUserDataTenho() {
         const db = getDatabase();
         let result = {};
@@ -325,10 +473,26 @@ function DetalheLivro() {
             }
             // Retorno existe
             result = snapshot.val();
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             set(ref(db, `usuarios/${usuario.user.uid}/livrosTenho`), result);
         })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS QUERO TER PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroTer`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroTer`), result);
+        })
     }
+
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO QUERO TER
     function writeUserDataQueroTer() {
         const db = getDatabase();
         let result = {};
@@ -338,11 +502,26 @@ function DetalheLivro() {
             }
             // Retorno existe
             result = snapshot.val();
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             set(ref(db, `usuarios/${usuario.user.uid}/livrosQueroTer`), result);
+        })
+
+        //////////////////////////////////////        
+        // BUSCANDO DO LIVROS TENHO PARA REMOVER SE EXISTIR...
+        result = {};
+        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosTenho`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+
+            result = snapshot.val();
+            delete result[params.id];
+            set(ref(db, `usuarios/${usuario.user.uid}/livrosTenho`), result);
         })
     }
 
+    //////////////////////////////////////
+    // ADICIONANDO UM LIVRO FAVORITO
     function writeUserDataFavoritos() {
         const db = getDatabase();
         let result = {};
@@ -354,7 +533,7 @@ function DetalheLivro() {
             result = snapshot.val();
             console.log(result);
             // console.log(result);
-            result = { ...result, [params.id]: '' };
+            result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             // console.log(result);
             set(ref(db, `usuarios/${usuario.user.uid}/livrosFavoritos`), result);
         })
@@ -389,18 +568,15 @@ function DetalheLivro() {
                                 <Tab label="Minha biblioteca" {...a11yProps(1)} />
                             </Tabs>
                             <TabPanel value={value} index={0}>
-                                {BookmarkCheck ? <BsBookmarkCheck onClick={() => { clickLido(!BookmarkCheck) }} /> : <BsBookmarkCheckFill onClick={() => { clickLido(!BookmarkCheck) }} />} Lido<br />
-                                {BookmarkDash ? <BsBookmarkDash onClick={() => { clickLendo(!BookmarkDash) }} /> : <BsBookmarkDashFill onClick={() => { clickLendo(!BookmarkDash) }} />} Lendo<br />
-                                {BookmarkPlus ? <BsBookmarkPlus onClick={() => { clickQueroLer(!BookmarkPlus) }} /> : <BsBookmarkPlusFill onClick={() => { clickQueroLer(!BookmarkPlus) }} />} Quero ler<br />
-                                {BookmarkX ? <BsBookmarkX onClick={() => { clickAbandonei(!BookmarkX) }} /> : <BsBookmarkXFill onClick={() => { clickAbandonei(!BookmarkX) }} />} Abandonado<br />
+                                {BookmarkCheck ? <BsBookmarkCheck onClick={() => { clickLido() }} /> : <BsBookmarkCheckFill onClick={() => { clickLido() }} />} Lido<br />
+                                {BookmarkDash ? <BsBookmarkDash onClick={() => { clickLendo() }} /> : <BsBookmarkDashFill onClick={() => { clickLendo() }} />} Lendo<br />
+                                {BookmarkPlus ? <BsBookmarkPlus onClick={() => { clickQueroLer() }} /> : <BsBookmarkPlusFill onClick={() => { clickQueroLer() }} />} Quero ler<br />
+                                {BookmarkX ? <BsBookmarkX onClick={() => { clickAbandonei() }} /> : <BsBookmarkXFill onClick={() => { clickAbandonei() }} />} Abandonado<br />
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                {/* {OutlineBook ? <AiOutlineBook onClick={() => { setAiOutlineBook(!AiOutlineBook); }} /> : <AiFillBook onClick={() => { setAiFillBook(!AiOutlineBook); setAiOutlineBook(!AiOutlineBook) }} />} Quero ter<br /> */}
-                                {/* {FillBook ? <AiFillBook onClick={() => { setAiFillBook(!AiFillBook) }} /> : <AiFillBookFill onClick={() => { setAiFillBook(!AiFillBook) }} />} Tenho<br /> */}
-                                {/* {BookmarkHeart ? <BsBookmarkHeart onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} /> : <BsFillBookmarkHeartFill onClick={() => { setBookmarkHeart(!BsBookmarkHeart) }} />} Favorito<br /> */}
-                                <AiOutlineBook /> Quero ter<br />
-                                <AiFillBook /> Tenho<br />
-                                <BsBookmarkHeart /> Favorito
+                                {BookmarkHeart ? <BsBookmarkHeart onClick={() => { clickFavorito() }} /> : <BsBookmarkHeartFill onClick={() => { clickFavorito() }} />} Favorito<br />
+                                {BookTenho ? <AiOutlineBook onClick={(() => { clickTenho(!BookTenho) })} /> : <AiFillBook onClick={() => { clickTenho(!BookTenho) }} />} Tenho <br />
+                                {BookQueroTer ? <AiOutlineBook onClick={(() => { clickQueroTer(!BookQueroTer) })} /> : <AiFillBook onClick={() => { clickQueroTer(!BookQueroTer) }} />} Quero ter <br />
                             </TabPanel>
                         </Box>
                     </ModalUnstyled>
@@ -413,5 +589,4 @@ function DetalheLivro() {
         </>
     )
 }
-
 export default DetalheLivro;

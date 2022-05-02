@@ -18,7 +18,7 @@ function Home() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        usuario['user'] && alert(usuario['user']['email']);
+        // usuario['user'] && alert(usuario['user']['email']);
         console.log(usuario);
     }, [usuario])
 

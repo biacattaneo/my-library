@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { getDatabase, ref, get, child } from "firebase/database";
 
 
-function Usuario({ name, bio, tempo }) {
+function Usuario() {
     const dbRef = ref(getDatabase());
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
     const [uid, setUid] = useState('');
@@ -18,26 +18,26 @@ function Usuario({ name, bio, tempo }) {
     //bio = descricao colocada pelo usuário (opcional)
     //tempo = desde quando o usuario usa a plataforma
     useEffect(() => {
-        if (usuario['user']['uid']) {
+        if (usuario?.user?.uid) {
             setUid(usuario['user']['uid']);
         }
     }, [usuario])
-    
+
     useEffect(() => {
-        console.log(perfil);
-        if (uid != '' && Object.keys(perfil).length === 0) {
+        console.log('-')
+        if ((uid !== '') && (uid.lenght !== 0)) {
             get(child(dbRef, `usuarios/${uid}/`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     // console.log(snapshot.val());
+                    console.log('uid ->' + uid);
                     setPerfil(snapshot.val());
+
                 } else {
                     console.log("No data available");
                 }
-            }).catch((error) => {
-                console.error(error);
-            });
+            })
         }
-    }, [perfil])
+    }, [uid])
 
     return (
         <>
@@ -46,33 +46,68 @@ function Usuario({ name, bio, tempo }) {
                     <div>
                         <AiOutlineUser />
                     </div>
-                    {usuario['user']['displayName'] && <p>Nome: {usuario['user']['displayName']}</p>}
-                    {perfil.perfil && perfil.perfil.bio ? <p>Bio: {perfil.perfil.bio} </p> : <p>Este usuário não tem bio cadastrada :(</p>}
-                    <p>Aqui desde:{tempo}</p>
+                    {usuario && usuario.user && usuario['user']['displayName'] && <p>Nome: {usuario['user']['displayName']}</p>}
+                    {perfil && perfil.perfil && perfil.perfil.bio ? <p>Bio: {perfil.perfil.bio} </p> : <p>Este usuário não tem bio cadastrada :(</p>}
+                    <p>Aqui desde:</p>
                     <button className={styles.btnPerfilFinancas} value='' ><Link to='/detalhePerfilFinancas'>Suas finanças literárias</Link></button>
                 </div>
                 <div className={styles.library}>
-                    {/* cardgrupo  */}
                     <h3>Lidos</h3>
                     <div>
-                        {perfil.livrosLidos ? <p>{perfil.livrosLidos}</p> : <p>Esta categoria ainda está vazia</p>}
+                        {perfil && perfil.livrosLidos && Object.entries(perfil.livrosLidos).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
+                    </div>
+                    <h3>Lendo</h3>
+                    <div>
+                        {perfil && perfil.livrosLendo && Object.entries(perfil.livrosLendo).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
                     </div>
                     <h3>Quero ler</h3>
                     <div>
-                        {perfil.livrosQueroLer ? <p>{perfil.livrosQueroLer}</p> : <p>Esta categoria ainda está vazia</p>}
+                        {perfil && perfil.livrosQueroLer && Object.entries(perfil.livrosQueroLer).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
+                    </div>
+                    <h3>Abandonados</h3>
+                    <div>
+                        {perfil && perfil.livrosAbandonados && Object.entries(perfil.livrosAbandonados).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
                     </div>
                     <h3>Favoritos</h3>
                     <div>
-                        {perfil.livrosFavoritos ? <p>{perfil.livrosFavoritos}</p> : <p>Esta categoria ainda está vazia</p>}
+                        {perfil && perfil.livrosFavoritos && Object.entries(perfil.livrosFavoritos).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
                     </div>
                     <h3>Tenho</h3>
                     {/* <small>Quanto vale minha estante: </small> */}
                     <div>
-                        {perfil.livrosTenho ? <p>{perfil.livrosTenho}</p> : <p>Esta categoria ainda está vazia</p>}
+                        {perfil && perfil.livrosTenho && Object.entries(perfil.livrosTenho).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
                     </div>
                     <h3>Quero ter</h3>
                     <div>
-                        {perfil.livrosQueroTer ? <p>{perfil.livrosLidos}</p> : <p>Esta categoria ainda está vazia</p>}
+                        {perfil && perfil.livrosQueroTer && Object.entries(perfil.livrosQueroTer).map(([key, value]) => (
+                            <>
+                                <Link to={`/detalheLivro/${key}`} key={key}>{value}</Link><br />
+                            </>
+                        ))}
                     </div>
                 </div>
             </div>

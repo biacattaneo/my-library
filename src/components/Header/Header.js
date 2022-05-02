@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { BrowserRouter, Link } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, useNavigate } from "react-router-dom";
 import styles from './Header.module.css'
 import { AiOutlineUser, AiOutlineSearch } from "react-icons/ai";
 import { TextField } from '@mui/material';
 import { Glob } from "../../App";
 import Home from '../Home/Home';
 import MyContext from '../GlobalVariables';
+import context from '../GlobalVariables';
 
 function Header(props) {
 
@@ -14,22 +15,24 @@ function Header(props) {
         setparametroDeBusca(_searchBookParam)
     }, [_searchBookParam])
 
-    const [parametroDeBusca, setparametroDeBusca] = useContext(MyContext);
+    const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // usuario['user'] && alert(usuario['user']['email']);
+        console.log(usuario);
+    }, [usuario])
 
     return (
         <div className={styles.header}>
             <ul className={styles.list}>
                 <li className={styles.item}>
-                    {/* <a href="/home">Home</a> */}
-                    {/* <Link to='/home'>Home</Link> */}
                     <p><Link to='/home' >Home</Link></p>
                 </li>
                 <li className={styles.item}>
-                    {/* <a href="/grupos">Grupos</a> */}
                     <Link to='/grupos'>Grupos</Link>
                 </li>
                 <li className={styles.item}>
-                    {/* <a href="/emprestedoe">Empreste/Doe</a> */}
                     <Link to='/emprestedoe'>Empreste/Doe</Link>
                 </li>
                 <li className={styles.item}>
@@ -41,11 +44,11 @@ function Header(props) {
                     <AiOutlineSearch className={styles.buscabtn} />
                 </li>
                 <li>
-                    {/* <a href="/login"><AiOutlineUser className={styles.loginIcon} /></a> */}
-                    <Link to='/login'><AiOutlineUser className={styles.loginIcon} /></Link>
+                    {/* {usuario['user'] ? navigate('/perfilUsuario') : } */}
+                    {!(usuario && usuario.user && usuario.user.email) ? <Link to='/login'><AiOutlineUser className={styles.loginIcon} /></Link> : <Link to='/perfilUsuario'><AiOutlineUser className={styles.loginIcon} /></Link> }
                 </li>
             </ul>
-        </div>
+        </div>  
     )
 }
 
