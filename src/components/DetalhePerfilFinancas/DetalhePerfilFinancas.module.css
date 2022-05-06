@@ -6,10 +6,22 @@ h2{
     flex-direction: column;
 }
 
-.campo{
+.campoSaldoMensal{
     background-color: #e5e5e5;
     height: 25px;
-    width: 300px;
+    width: 250px;
+}
+
+.campoPrecoPrioridade{
+    background-color: #e5e5e5;
+    height: 25px;
+    width: 100px;
+}
+
+.campoLojaPrioridade{
+    background-color: #e5e5e5;
+    height: 25px;
+    width: 100px;
 }
 
 .labelConhecer{
@@ -31,5 +43,10 @@ h2{
 }
 
 .selectConhecer{
-    
+    background-color: #e5e5e5;
+    height: 25px;
+    width: 200px;
+    margin-top: 10px;
+    color: #2d1818;
+    font-size: medium;
 }

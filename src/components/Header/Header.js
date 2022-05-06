@@ -44,7 +44,6 @@ function Header(props) {
                     <AiOutlineSearch className={styles.buscabtn} />
                 </li>
                 <li>
-                    {/* {usuario['user'] ? navigate('/perfilUsuario') : } */}
                     {!(usuario && usuario.user && usuario.user.email) ? <Link to='/login'><AiOutlineUser className={styles.loginIcon} /></Link> : <Link to='/perfilUsuario'><AiOutlineUser className={styles.loginIcon} /></Link> }
                 </li>
             </ul>
