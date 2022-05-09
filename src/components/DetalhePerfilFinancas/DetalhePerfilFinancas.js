@@ -42,9 +42,7 @@ function DetalhePerfilFinancas() {
                     // console.log(snapshot.val());
                     // console.log('uid ->' + uid);
                     setPerfil(snapshot.val());
-                    // writeUserDataPrioridade()
-
-
+                    writeUserDataPrioridade()
                 } else {
                     console.log("No data available");
                 }
@@ -72,6 +70,400 @@ function DetalhePerfilFinancas() {
             // result = { ...result, [params.id]: [resposta['items'][0]['volumeInfo']['title']] };
             // console.log(result);
             // set(ref(db, `usuarios/${usuario.user.uid}/livrosFavoritos`), result);
+        })
+    }
+
+    function calcularPrevisao() {
+        const db = getDatabase();
+        let result = {};
+        let soma5Prio, soma4Prio, soma3Prio, soma2Prio;
+        let somaPrio2345, somaPrio345, somaPrio45, somaPrio23, somaPrio34, somaPrio234;
+        soma5Prio = perfil.perfil.precoPrio1 + perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4 + perfil.perfil.precoPrio5;
+        soma4Prio = perfil.perfil.precoPrio1 + perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4;
+        soma3Prio = perfil.perfil.precoPrio1 + perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3;
+        soma2Prio = perfil.perfil.precoPrio1 + perfil.perfil.precoPrio2;
+        somaPrio2345 = perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4 + perfil.perfil.precoPrio5;
+        somaPrio345 = perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4 + perfil.perfil.precoPrio5;
+        somaPrio234 = perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4;
+        somaPrio45 = perfil.perfil.precoPrio4 + perfil.perfil.precoPrio5;
+        somaPrio23 = perfil.perfil.precoPrio2 + perfil.perfil.precoPrio3;
+        somaPrio34 = perfil.perfil.precoPrio3 + perfil.perfil.precoPrio4;
+
+        get(child(dbRef, `usuarios/${usuario.user.uid}/perfil/`)).then((snapshot) => {
+            if (!snapshot.exists()) {
+                result = {};
+            }
+            // Retorno existe
+            result = snapshot.val();
+            console.log(result);
+
+            if (perfil.perfil.oQueFazerSaldoMensal == 'Descartado') {
+                if (perfil.perfil.precoPrio1 > perfil.perfil.saldoMensal || perfil.perfil.precoPrio2 > perfil.perfil.saldoMensal || perfil.perfil.precoPrio3 > perfil.perfil.saldoMensal || perfil.perfil.precoPrio4 > perfil.perfil.saldoMensal || perfil.perfil.precoPrio5 > perfil.perfil.saldoMensal) {
+                    //O preco de uma de suas prioridades é maior que seu saldo mensal e você optou por não acumular o saldo. Para que a previsão seja feita, aumento seu saldo mensal ou acumule seu saldo.
+                }
+                else {
+                    if (soma5Prio <= perfil.perfil.saldoMensal) {
+                        //Você consegue comprar todos os livros de sua prioridade em 1 mês!
+                    }
+                    else if (soma4Prio <= perfil.perfil.saldoMensal) {
+                        //Você consegue comprar suas 4 primeiras prioridades no primeiro mês e a a prioridade 5 no segundo mês
+                    }
+                    else if (soma3Prio <= perfil.perfil.saldoMensal) {
+                        if (somaPrio45 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar suas 3 primeiras prioridades no primeiro mês e as prioridades 4 e 5 no segundo mês
+                        }
+                        else {
+                            //Você consegue comprar suas 3 primeiras prioridades no primeiro mês, a 4 prioridade no segundo mês e a 5 prioridade no terceiro mês.
+                        }
+                    }
+                    else if (soma2Prio <= perfil.perfil.saldoMensal) {
+                        if (somaPrio345 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar suas 2 primeiras prioridades no primeiro mês e as prioridades 3, 4 e 5 no segundo mês
+                        }
+                        else if (somaPrio34 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar suas 2 primeiras prioridades no primeiro mês, as prioridade 3 e 4 no segundo mês e a 5 prioridade no terceiro mês.
+                        }
+                        else if (somaPrio45 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar suas 2 primeiras prioridades no primeiro mês, a prioridade 3 no segundo mês e as prioridade 4 e 5 no terceiro mês.
+                        }
+                        else {
+                            //Você consegue comprar suas 2 primeiras prioridades no primeiro mês, a prioridade 3 no segundo mês, a prioridade 4 no terceiro mês e a prioridade 5 no quarto mês.
+                        }
+                    }
+                    else {
+                        if (somaPrio2345 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, e as demais prioridades no segundo mês
+                        }
+                        else if (somaPrio345 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, a prioridade 2 no segundo mês e as prioridades 3, 4 e 5 no terceiro mês
+                        }
+                        else if (somaPrio23 <= perfil.perfil.saldoMensal && somaPrio45 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, as prioridade 2 e 3 no segundo mês e as prioridades 4 e 5 no terceiro mês
+                        }
+                        else if (somaPrio23 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, as prioridade 2 e 3 no segundo mês, a prioridades 4 no terceiro mês e a prioridade 5 no quarto mês
+                        }
+                        else if (somaPrio34 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, a prioridade 2 no segundo mês, as prioridades 3 e 4 no terceiro mês e a prioridade 5 no quarto mês
+                        }
+                        else if (somaPrio45 <= perfil.perfil.saldoMensal) {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, a prioridade 2 no segundo mês, a prioridades 3 no terceiro mês e as prioridades 4 e 5 no quarto mês
+                        }
+                        else {
+                            //Você consegue comprar a prioridade 1 no primeiro mês, a prioridade 2 no segundo mês, a prioridade 3 no terceiro mês, a prioridade 4 no quarto mês e a prioridade 5 no quinto mês
+                            //Você consegue comprar um livro por mês na ordem de prioridade.
+                        }
+                    }
+                }
+            }
+            else {
+                // Acumulado
+                let result, acumulo;
+                if (soma5Prio < perfil.perfil.saldoMensal) {
+                    //Você consegue comprar todos os livros de sua prioridade em 1 mês!
+                    result = perfil.perfil.saldoMensal - soma5Prio;
+                    //Depois da compra sobrará result
+                }
+                else if (soma4Prio < perfil.perfil.saldoMensal) {
+                    //Você consegue comprar suas 4 primeiras prioridades no primeiro mês
+                    result = perfil.perfil.saldoMensal - soma4Prio;
+                    acumulo = perfil.perfil.saldoMensal + result;
+                    if (perfil.perfil.precoPrio5 < acumulo) {
+                        //e a prioridade 5 no segundo mês
+                    }
+                    else {
+                        acumulo = acumulo + (perfil.perfil.saldoMensal * 2);
+                        if (perfil.perfil.precoPrio5 > acumulo) {
+                            //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                            //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                            //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                        }
+                        else {
+                            //No segundo mês você não deve comprar nenhum livro para economizar para a prioridade 5, e no terceiro mês você poderá compra-la.
+                        }
+                    }
+                }
+                else if (soma3Prio < perfil.perfil.saldoMensal) {
+                    //Você consegue comprar suas 3 primeiras prioridades no primeiro mês
+                    result = perfil.perfil.saldoMensal - soma3Prio;
+                    acumulo = perfil.perfil.saldoMensal + result;
+                    if (somaPrio45 < acumulo) {
+                        //E a prioridade 4 e 5 no segundo mês
+                    }
+                    else if (perfil.perfil.precoPrio4 > acumulo) {
+                        acumulo = acumulo + (perfil.perfil.saldoMensal * 2);
+                        if (perfil.perfil.precoPrio4 > acumulo) {
+                            //A prioridade 4 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                            //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                            //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                            //PS: Não é possivel calcular quanto tempo precisará para comprar a prioridade 5
+                        }
+                        else {
+                            //No segundo mês você não deve comprar nenhum livro para economizar para a prioridade 4, comprando-a no terceiro mes
+                            result = acumulo - perfil.perfil.precoPrio4;
+                            acumulo = result + perfil.perfil.saldoMensal;
+                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                acumulo = acumulo + perfil.perfil.saldoMensal;
+                                if (perfil.perfil.precoPrio5 > acumulo) {
+                                    //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                    //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                    //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                }
+                                else {
+                                    // e a prioridade 5 no quarto mês
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        // A prioridade 4 no segundo mês
+                        result = acumulo - perfil.perfil.precoPrio4;
+                        acumulo = result + perfil.perfil.saldoMensal;
+                        if (perfil.perfil.precoPrio5 > acumulo) {
+                            acumulo = acumulo + perfil.perfil.saldoMensal;
+                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                            }
+                            else {
+                                // e a prioridade 5 no terceiro mês
+                            }
+                        }
+                    }
+                }
+                else if (soma2Prio < perfil.perfil.saldoMensal) {
+                    //Você consegue comprar as prioridade 1 e 2 no primeiro mês
+                    result = perfil.perfil.saldoMensal - soma2Prio;
+                    acumulo = perfil.perfil.saldoMensal + result;
+                    if (somaPrio345 < acumulo) {
+                        //E as prioridades 3, 4 e 5 no segundo mês
+                        result = acumulo - somaPrio345;
+                        acumulo = perfil.perfil.saldoMensal + result;
+                    }
+                    else if (somaPrio34 < acumulo) {
+                        //E as prioridades 3 e 4 no segundo mês
+                        result = acumulo - somaPrio34;
+                        acumulo = perfil.perfil.saldoMensal + result;
+                        if (perfil.perfil.precoPrio5 > acumulo) {
+                            acumulo = acumulo + perfil.perfil.saldoMensal;
+                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                            }
+                            else {
+                                // e a prioridade 5 no terceiro mês
+                            }
+                        }
+                    }
+                    else if (perfil.perfil.precoPrio3 < acumulo) {
+                        // A prioridade 3 no segundo mês
+                        result = acumulo - perfil.perfil.precoPrio3;
+                        acumulo = perfil.perfil.saldoMensal + result;
+                        if (somaPrio45 < acumulo) {
+                            //E as prioridades 4 e 5 no terceiro mês
+                            result = acumulo - somaPrio45;
+                            acumulo = perfil.perfil.saldoMensal + result;
+                        }
+                        else if (perfil.perfil.precoPrio4 < acumulo) {
+                            //A prioridade 4 no terceiro mês
+                            result = acumulo - perfil.perfil.precoPrio4;
+                            acumulo = perfil.perfil.saldoMensal + result;
+                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                acumulo = acumulo + perfil.perfil.saldoMensal;
+                                if (perfil.perfil.precoPrio5 > acumulo) {
+                                    //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                    //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                    //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                }
+                                else {
+                                    // e a prioridade 5 no quarto mês
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (perfil.perfil.precoPrio1 < perfil.perfil.saldoMensal) {
+                        //Você consegue comprar a prioridade 1 no primeiro mês
+                        result = perfil.perfil.saldoMensal - perfil.perfil.precoPrio1;
+                        acumulo = perfil.perfil.saldoMensal + result;
+                        if (somaPrio2345 < acumulo) {
+                            //E as prioridades 2, 3, 4 e 5 no segundo mês
+                        }
+                        else if (somaPrio234 < acumulo) {
+                            // E as prioridades 2, 3 e 4 no segundo mês
+                            result = acumulo - somaPrio234;
+                            acumulo = perfil.perfil.saldoMensal + result;
+                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                acumulo = acumulo + perfil.perfil.saldoMensal;
+                                if (perfil.perfil.precoPrio5 > acumulo) {
+                                    //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                    //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                    //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                }
+                                else {
+                                    // e a prioridade 5 no quarto mês
+                                }
+                            }
+                            else {
+                                // e a prioridade 5 no terceiro mês
+                            }
+                        }
+                    }
+                    else {
+                        acumulo = perfil.perfil.saldoMensal * 2;
+                        if (perfil.perfil.precoPrio1 > acumulo) {
+                            //A prioridade 1 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                            //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                            //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                        }
+                        else {
+                            //Você não deve fazer comprar no primeiro mês para economiza para comprar a prioridade 1 no segundo mês
+                            result = acumulo - perfil.perfil.precoPrio1;
+                            acumulo = perfil.perfil.saldoMensal + result;
+                            if (somaPrio2345 < acumulo) {
+                                // E as demais prioridades no terceiro mês
+                            }
+                            else if (somaPrio234 < acumulo) {
+                                //E as prioridades 2, 3 e 4 no terceiro mês
+                                result = acumulo - somaPrio234;
+                                acumulo = perfil.perfil.saldoMensal + result;
+                                if (perfil.perfil.precoPrio5 > acumulo) {
+                                    acumulo = acumulo + perfil.perfil.saldoMensal;
+                                    if (perfil.perfil.precoPrio5 > acumulo) {
+                                        //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                        //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                        //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                    }
+                                    else {
+                                        // e a prioridade 5 no quinto mês
+                                    }
+                                }
+                                else {
+                                    // e a prioridade 5 no quarto mês
+                                }
+                            }
+                            else if (somaPrio23 < acumulo) {
+                                //E as prioridades 2 e 3 no terceiro mês
+                                result = acumulo - somaPrio23;
+                                acumulo = perfil.perfil.saldoMensal + result;
+                                if (somaPrio45 < acumulo) {
+                                    //E as prioridade 4 e 5 no quarto mês
+                                    result = acumulo - somaPrio45;
+                                    acumulo = perfil.perfil.saldoMensal + result;
+                                }
+                                else if (perfil.perfil.precoPrio4 < acumulo) {
+                                    //E a prioridade 4 no quarto mês
+                                    result = acumulo - perfil.perfil.precoPrio4;
+                                    acumulo = perfil.perfil.saldoMensal + result;
+                                    if (perfil.perfil.precoPrio5 > acumulo) {
+                                        acumulo = acumulo + perfil.perfil.saldoMensal;
+                                        if (perfil.perfil.precoPrio5 > acumulo) {
+                                            //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                            //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                            //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                        }
+                                        else {
+                                            // e a prioridade 5 no sexto mês
+                                        }
+                                    }
+                                    else {
+                                        // e a prioridade 5 no quinto mês
+                                    }
+                                }
+                                else {
+                                    acumulo = acumulo + perfil.perfil.saldoMensal;
+                                    if (perfil.perfil.precoPrio4 > acumulo) {
+                                        //A prioridade 4 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                        //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                        //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                    }
+                                    else {
+                                        //E a prioridade 4 no quarto mês
+                                        result = acumulo - perfil.perfil.precoPrio4;
+                                        acumulo = perfil.perfil.saldoMensal + result;
+                                        if (perfil.perfil.precoPrio5 > acumulo) {
+                                            acumulo = acumulo + perfil.perfil.saldoMensal;
+                                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                                //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                                //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                                //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                            }
+                                            else {
+                                                // e a prioridade 5 no sexto mês
+                                            }
+                                        }
+                                        else {
+                                            // e a prioridade 5 no quinto mês
+                                        }
+                                    }
+                                }
+                            }
+                            else if (perfil.perfil.precoPrio2 < acumulo) {
+                                //E a prioridade 2 no terceiro mês
+                                result = acumulo - perfil.perfil.precoPrio2;
+                                if (somaPrio345 < acumulo) {
+                                    // e as prioridades 3, 4 e 5 no quarto mês
+                                }
+                                else if (somaPrio34 < acumulo) {
+                                    // e as prioridade 3 e 4 no quarto mês
+                                    result = acumulo - perfil.perfil.somaPrio34;
+                                    acumulo = perfil.perfil.saldoMensal + result;
+                                    if (perfil.perfil.precoPrio5 > acumulo) {
+                                        acumulo = acumulo + perfil.perfil.saldoMensal;
+                                        if (perfil.perfil.precoPrio5 > acumulo) {
+                                            //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                            //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                            //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                        }
+                                        else {
+                                            // e a prioridade 5 no sexto mês
+                                        }
+                                    }
+                                    else {
+                                        // e a prioridade 5 no quinto mês
+                                    }
+                                }
+                                else if (perfil.perfil.precoPrio3 < acumulo) {
+                                    // e a prioridade 3 no quarto mês
+                                    result = acumulo - perfil.perfil.precoPrio3;
+                                    acumulo = perfil.perfil.saldoMensal + result;
+                                    if (somaPrio45 < acumulo) {
+                                        //e as prioridade 4 e 5 no quinto mês
+                                    }
+                                    else if (perfil.perfil.precoPrio4 < acumulo) {
+                                        // e a prioridade 4 no quinto mês
+                                        result = acumulo - perfil.perfil.precoPrio4;
+                                        acumulo = perfil.perfil.saldoMensal + result;
+                                        if (perfil.perfil.precoPrio5 > acumulo) {
+                                            acumulo = acumulo + perfil.perfil.saldoMensal;
+                                            if (perfil.perfil.precoPrio5 > acumulo) {
+                                                //A prioridade 5 custa mais de 2 meses do seu saldo mensal. Tem certeza que deseja comprar essa edição?
+                                                //Se sim, você devera ficar mais de 2 meses sem comprar livros para economizar e comprar essa edição.
+                                                //Se não, veja se há um versão mais em conta (capa brochura, ebook, audiobook)
+                                            }
+                                            else {
+                                                // e a prioridade 5 no setimo mês
+                                            }
+                                        }
+                                        else {
+                                            // e a prioridade 5 no sexto mês
+                                        }
+                                    }
+                                }else{
+                                    
+                                }
+                            }
+                            else if () {
+
+                            }
+                        }
+                    }
+                }
+            }
+
         })
     }
 
