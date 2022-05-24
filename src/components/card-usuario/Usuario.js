@@ -4,7 +4,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import styles from './Usuario.module.css';
 import context from '../GlobalVariables';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate} from 'react-router-dom';
 import { getDatabase, ref, get, child } from "firebase/database";
 
 
@@ -13,6 +13,7 @@ function Usuario() {
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
     const [uid, setUid] = useState('');
     const [perfil, setPerfil] = useState({});
+    const navigate = useNavigate();
 
     //Name = nome do usuario
     //bio = descricao colocada pelo usuário (opcional)
@@ -24,18 +25,20 @@ function Usuario() {
     }, [usuario])
 
     useEffect(() => {
-        console.log('-')
         if ((uid !== '') && (uid.lenght !== 0)) {
             get(child(dbRef, `usuarios/${uid}/`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     // console.log(snapshot.val());
-                    console.log('uid ->' + uid);
+                    // console.log('uid ->' + uid);
                     setPerfil(snapshot.val());
 
                 } else {
                     console.log("No data available");
                 }
             })
+        }
+        else{
+            navigate('/login');
         }
     }, [uid])
 

@@ -12,20 +12,11 @@ import MyContext from './components/GlobalVariables';
 function App() {
   const [parametroDeBusca, setParametroDeBusca] = useState('');
   const [usuario, setUsuario] = useState({});
-  // useEffect(()=>{
-  //   const dbRef = ref(getDatabase());
-  //   const db = getDatabase();
-  //   // get(child(dbRef, 'Livros')).then((retorno) => {
-  //   //   console.log(retorno.val());
-  //   // }) // ID DA PESSOA
-  //   set(ref(db, 'Livros' + '2'), {
-  //     nome: 'CLarice lispector batata frita 2',
-  //     pagina: 300
-  //   });
-  // },[])
+  const [grupos, setGrupos] = useState({});
+
   return (
     <BrowserRouter>
-      <MyContext.Provider value={[parametroDeBusca, setParametroDeBusca, usuario, setUsuario]}>
+      <MyContext.Provider value={[parametroDeBusca, setParametroDeBusca, usuario, setUsuario, grupos, setGrupos]}>
         <div className="App">
           <Header></Header>
           <Rotas>

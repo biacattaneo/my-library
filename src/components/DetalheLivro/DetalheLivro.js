@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import context from '../GlobalVariables';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import styles from './DetalheLivro.module.css';
 import { BsBookmarkPlus, BsBookmarkPlusFill, BsBookmarkCheck, BsBookmarkCheckFill, BsBookmarkHeartFill, BsBookmarkDash, BsBookmarkX, BsBookmarkHeart, BsBookmarkDashFill, BsBookmarkXFill } from "react-icons/bs";
 import { AiOutlineBook, AiFillBook } from "react-icons/ai";
@@ -32,95 +32,117 @@ import { getDatabase, ref, get, child, set, remove } from "firebase/database";
 function DetalheLivro() {
     const [resposta, setResposta] = useState({});
     const params = useParams();
+    const [uid, setUid] = useState('');
+    const [perfil, setPerfil] = useState({});
     const [parametroDeBusca, setparametroDeBusca, usuario, setUsuario] = useContext(context);
     const dbRef = ref(getDatabase());
     const [fbIterator, setFbIterator] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (usuario?.user) {
 
-        axios.get('https://www.googleapis.com/books/v1/volumes?q=' + params.id).then(res => {
-            setResposta(res.data);
-            // console.log(res.data)
-        });
+            axios.get('https://www.googleapis.com/books/v1/volumes?q=' + params.id).then(res => {
+                setResposta(res.data);
+                // console.log(res.data)
+            });
 
-        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                setFbIterator(snapshot.val());
-                let it = snapshot.val();
-                for (var i in it) {
-                    console.log(i);
-                    if (params.id === i) {
-                        setBookmarkX(false);
-                        console.log('abandonados');
+            get(child(dbRef, `usuarios/${usuario.user.uid}/livrosAbandonados`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setFbIterator(snapshot.val());
+                    let it = snapshot.val();
+                    for (var i in it) {
+                        console.log(i);
+                        if (params.id === i) {
+                            setBookmarkX(false);
+                            console.log('abandonados');
+                        }
                     }
+                } else {
+                    console.log("No data available");
                 }
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+            }).catch((error) => {
+                console.error(error);
+            });
 
-        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                setFbIterator(snapshot.val());
-                let it = snapshot.val();
-                for (var i in it) {
-                    console.log(i);
-                    if (params.id === i) {
-                        setBookmarkCheck(false);
-                        console.log('lidos');
+            get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLidos`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setFbIterator(snapshot.val());
+                    let it = snapshot.val();
+                    for (var i in it) {
+                        console.log(i);
+                        if (params.id === i) {
+                            setBookmarkCheck(false);
+                            console.log('lidos');
+                        }
                     }
+                } else {
+                    console.log("No data available");
                 }
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+            }).catch((error) => {
+                console.error(error);
+            });
 
-        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                setFbIterator(snapshot.val());
-                let it = snapshot.val();
-                for (var i in it) {
-                    console.log(i);
-                    if (params.id === i) {
-                        setBookmarkPlus(false);
-                        console.log('queroler');
+            get(child(dbRef, `usuarios/${usuario.user.uid}/livrosQueroLer`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setFbIterator(snapshot.val());
+                    let it = snapshot.val();
+                    for (var i in it) {
+                        console.log(i);
+                        if (params.id === i) {
+                            setBookmarkPlus(false);
+                            console.log('queroler');
+                        }
                     }
+                } else {
+                    console.log("No data available");
                 }
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
+            }).catch((error) => {
+                console.error(error);
+            });
 
-        get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                setFbIterator(snapshot.val());
-                let it = snapshot.val();
-                for (var i in it) {
-                    console.log(i);
-                    if (params.id === i) {
-                        setBookmarkDash(false);
-                        console.log('lendo');
+            get(child(dbRef, `usuarios/${usuario.user.uid}/livrosLendo`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setFbIterator(snapshot.val());
+                    let it = snapshot.val();
+                    for (var i in it) {
+                        console.log(i);
+                        if (params.id === i) {
+                            setBookmarkDash(false);
+                            console.log('lendo');
+                        }
                     }
+                } else {
+                    console.log("No data available");
                 }
-            } else {
-                console.log("No data available");
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-        // writeUserDataLido()
+            }).catch((error) => {
+                console.error(error);
+            });
+            // writeUserDataLido()
+        }
 
     }, []);
 
     useEffect(() => {
+        if ((uid !== '') && (uid.lenght !== 0)) {
+            get(child(dbRef, `usuarios/${uid}/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setPerfil(snapshot.val());
+
+                } else {
+                    console.log("No data available");
+                }
+            })
+        }
+        else {
+            navigate('/login');
+        }
+    }, [uid])
+
+    useEffect(() => {
         resposta['items'] && console.log(resposta);
     }, [resposta])
+
 
     // function BasicModal() {
     const [open, setOpen] = React.useState(false);
@@ -221,7 +243,7 @@ function DetalheLivro() {
         setBookmarkX(false);
         writeUserDataAbandonado();
     }
-    
+
     function clickTenho() {
         setBookTenho(false);//preencher tenho
         setBookQueroTer(true); //deixar o quero ter vazio

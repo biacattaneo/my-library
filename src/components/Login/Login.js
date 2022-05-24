@@ -38,14 +38,24 @@ function Login() {
                     "livrosTenho": "",
                     "perfil": {
                         "nome": result.user.displayName,
-                        "bio": "Sou um leitor normal que gosta de cachorrinhos bonitos.",
+                        "bio": "Sou um leitor que quer organizar melhor as leituras e compras.",
                         "oQueFazerSaldoMensal": "Descartado",
                         "prioridade1": "",
                         "prioridade2": "",
                         "prioridade3": "",
                         "prioridade4": "",
                         "prioridade5": "",
-                        "saldoMensal": 50
+                        "lojaPrio1": "",
+                        "lojaPrio2": "",
+                        "lojaPrio3": "",
+                        "lojaPrio4": "",
+                        "lojaPrio5": "",
+                        "precoPrio1": "",
+                        "precoPrio2": "",
+                        "precoPrio3": "",
+                        "precoPrio4": "",
+                        "precoPrio5": "",
+                        "saldoMensal": 0
                     }
                 })
                 navigate('/perfilUsuario');

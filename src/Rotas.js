@@ -19,7 +19,7 @@ function Rotas() {
                 <Route path='/login' element={<Login />} />
                 <Route path='/cadastro' element={<Cadastro />} />
                 <Route path='/detalhePerfilFinancas' element={<DetalhePerfilFinancas />} />
-                <Route path='/emprestedoe' element={<></>} />
+                <Route path='/emprestedoe' element={<h2>Página em desenvolvimento, favor aguardar...</h2>} />
                 <Route path='/perfilusuario' element={<Usuario />} />
                 <Route path='/detalhelivro/:id' element={<DetalheLivro />} />
                 <Route path='/grupos' element={<Grupos />} />
