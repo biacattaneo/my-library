@@ -124,7 +124,7 @@ function DetalheLivro() {
     }, []);
 
     useEffect(() => {
-        if ((uid !== '') && (uid.lenght !== 0)) {
+        if ((usuario?.user?.uid !== '') && (usuario?.user?.uid.lenght !== 0)) {
             get(child(dbRef, `usuarios/${uid}/`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     setPerfil(snapshot.val());
