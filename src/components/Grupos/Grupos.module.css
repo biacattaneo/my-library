@@ -1,0 +1,24 @@
+#h1{
+    color: #2d1818;
+}
+
+.eachGroup{
+    margin-bottom: 20px;
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.45);
+}
+
+.header{
+    background-color: #2d1818;
+    width: 500px;
+    text-align: 'left';
+    color: #e5e5e5;
+}
+
+.body{
+    background-color: white;
+    width: 500px;
+}
+
+.criarGrupo{
+    margin-bottom: 20px;
+}

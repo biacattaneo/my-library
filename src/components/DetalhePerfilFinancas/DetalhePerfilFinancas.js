@@ -113,6 +113,7 @@ function DetalhePerfilFinancas() {
                 //precos-array
                 for(let i=0; i<precos.length; i++){
                     console.log((precos[i] + soma) <= saldoMensal);
+                    console.log(precos[i] + soma);
                     if( (precos[i] + soma) <= saldoMensal){
                         soma += precos[i];
                     }
