@@ -27,7 +27,7 @@ function Header(props) {
         <div className={styles.header}>
             <ul className={styles.list}>
                 <li className={styles.item}>
-                    <p><Link to='/home' >Home</Link></p>
+                    <Link to='/home' >Home</Link>
                 </li>
                 <li className={styles.item}>
                     <Link to='/grupos'>Grupos</Link>

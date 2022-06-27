@@ -104,7 +104,8 @@ function DetalhePerfilFinancas() {
 
         if (descartado === true) {
             if (prioridade1 > saldoMensal || prioridade2 > saldoMensal || prioridade3 > saldoMensal || prioridade4 > saldoMensal || prioridade5 > saldoMensal) {
-                setResultadoPrevisao('O preco de uma de suas prioridades é maior que seu saldo mensal e você optou por não acumular o saldo. Para que a previsão seja feita, aumento seu saldo mensal ou acumule seu saldo.');
+                setResultadoPrevisao(`O preço de uma de suas prioridades é maior que seu saldo mensal e você optou por não acumular o saldo. 
+                Para que a previsão seja feita, aumento seu saldo mensal ou acumule seu saldo.`);
             }
             else {
                 let soma = 0;
